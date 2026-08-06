@@ -1,223 +1,386 @@
-# kiro-handbook
+# kiro-spec-handbook
 
-AWS Kiro Specification Handbook Publisher — converts Kiro specifications into a professionally indexed
-PDF handbook suitable for printing, handwritten review, and reading on a reMarkable tablet.
+Convert AWS Kiro specifications into a professionally formatted PDF handbook for review, annotation, and printing.
 
-A `just-ak` tool for anyone building and documenting specs using AWS Kiro.
+**The workflow:** Write specs → Generate PDF → Annotate on tablet (reMarkable, iPad, etc.) → Process notes back into project.
 
-This is a **GitHub Package** available at [`@just-ak/kiro-handbook`](https://github.com/just-ak/kiro-handbooks/packages).
-Use it in your own Kiro spec projects to generate handbooks from your specifications.
+## Why
 
-The handbook is **always generated from source**. Never edit the generated output by
-hand — your spec markdown files remain the single source of truth.
+Specification work requires review and collaboration. This tool lets you:
 
-## Quick Start
-
-```bash
-# Install from GitHub Packages
-npm install @just-ak/kiro-handbook
-
-# Generate a handbook
-handbook build
-
-# Split for upload
-handbook chunk
-```
-
-**👉 [View full usage guide](./USAGE.md) | [GitHub Packages setup](./GITHUB_PACKAGES.md)**
+- **Print & review** specifications as a polished, indexed PDF handbook
+- **Annotate on tablets** like reMarkable with handwritten notes and feedback
+- **Process annotations** back into your project (future integration with Claude/Opus)
+- **Archive versions** as deterministic builds, suitable for CI/CD
+- **Share with stakeholders** who prefer reading from paper or tablets
 
 ## Features
 
-- Indexed PDF handbook from Kiro specifications
-- Automatic SVG diagram and mermaid rendering
-- Cross-referenced requirements, tasks, and specifications
-- **PDF chunking for Kiro upload** (supports 4MB attachment limit)
-- Deterministic builds for CI/CD
-- Change detection via lock file
-- Architecture overview and traceability matrix
+- 📄 Indexed PDF handbook from Kiro specifications (requirements, tasks, diagrams)
+- 🎨 SVG diagram embedding and Mermaid diagram rendering
+- 📑 Cross-referenced architecture overview, requirements, tasks, and diagram indexes
+- 🔐 Deterministic builds for CI/CD and version control
+- 🎯 Stable identifiers for specs, requirements, and tasks
+- 📊 Traceability matrix and revision history
+- 💾 Change detection via lock file (know what changed since last build)
+- 📦 PDF chunking for Kiro uploads (respects 4MB attachment limit)
 
 ## Install
 
-The tool is a GitHub Package (`@just-ak/kiro-handbook`). From the repository root:
+### From GitHub Packages
+
+Authenticate with GitHub Packages first (required for private packages):
 
 ```bash
-npm install
+# Create a Personal Access Token at https://github.com/settings/tokens
+# with read:packages and write:packages scopes
+# Then configure npm:
+
+echo "@just-ak:registry=https://npm.pkg.github.com" >> ~/.npmrc
+echo "//npm.pkg.github.com/:_authToken=YOUR_TOKEN" >> ~/.npmrc
 ```
 
-To produce the PDF you also need [Pandoc](https://pandoc.org) and a LaTeX engine
-(`xelatex`, e.g. from TeX Live or MacTeX). Without them the tool still runs and emits
-the assembled Markdown; it just skips the PDF step. To embed the SVG diagrams in the
-PDF you also need one of `rsvg-convert` (librsvg), `inkscape`, or `cairosvg`.
-
-`mermaid` code blocks in specs are rendered to figures using
-[`@mermaid-js/mermaid-cli`](https://github.com/mermaid-js/mermaid-cli) (`mmdc`), which is
-a dev dependency of this workspace (it bundles a headless Chromium). If `mmdc` is missing,
-mermaid blocks are shown as code instead. A conservative sanitiser repairs common
-authoring issues (semicolons in sequence-message text, unquoted `subgraph` titles) at
-render time — the specs on disk are never modified.
+Then install:
 
 ```bash
-# macOS
-brew install pandoc librsvg
-# A LaTeX engine — either MacTeX or the lighter TinyTeX:
-brew install --cask mactex-no-gui
-# or: curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh
+npm install @just-ak/kiro-spec-handbook
 ```
 
-The tool automatically discovers a LaTeX engine even when it is not on your shell
-`PATH` — it looks in TinyTeX (`~/Library/TinyTeX`, `~/.TinyTeX`), MacTeX
-(`/Library/TeX/texbin`), and TeX Live locations, plus Homebrew. So `yarn handbook build`
-works right after installing TinyTeX without any shell configuration.
+### System Dependencies
 
-If you use TinyTeX, the required LaTeX packages are:
+To generate PDFs, you'll also need:
+
+**macOS:**
 
 ```bash
-tlmgr install fontspec geometry fancyhdr booktabs longtable xcolor titlesec \
-  parskip iftex hyperref pgf caption etoolbox footnotehyper ulem setspace \
-  unicode-math lm lm-math amsmath amsfonts
+brew install pandoc librsvg xelatex
 ```
 
-## Commands
-
-Run via the root scripts (works with `npm run` or `yarn`):
+Or use TinyTeX (lighter, 100MB vs 5GB):
 
 ```bash
-yarn handbook build        # scan specs -> assembled markdown + PDF + lock file
-yarn handbook validate     # validate metadata + cross references (non-zero on errors)
-yarn handbook index        # print spec / requirement / task / diagram indexes
-yarn handbook changes      # report specs changed since the last build (via lock file)
-yarn handbook chunk        # split PDF into chunks for Kiro upload (4MB per chunk)
+curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh
 ```
 
-With npm the pass-through form is:
+**Ubuntu/Debian:**
 
 ```bash
-npm run handbook -- build
-npm run handbook:validate
-npm run handbook:index
-npm run handbook:changes
-npm run handbook:chunk
+apt-get install pandoc librsvg2-bin texlive-xetex texlive-fonts-recommended
 ```
 
-### PDF Chunking (New)
+**Without system dependencies:** The tool still runs and outputs Markdown — PDF generation is optional.
 
-Split the generated PDF into 1–4 MB chunks suitable for Kiro's 4MB attachment limit:
+## Quick Start
 
-```bash
-# Auto-detect optimal chunk size
-yarn handbook chunk
+### 1. Organize Your Specs
 
-# Or specify a size explicitly
-yarn handbook chunk --size 3                    # 3 MB chunks
-yarn handbook chunk --size 4 --output ./chunks  # 4 MB chunks in custom dir
-yarn handbook chunk --dry-run                   # Preview without creating files
+Place Markdown specification files in `.kiro/specs/`:
 
-# Standalone usage
-yarn chunk handbook.pdf --auto-size
-yarn chunk handbook.pdf --size 2
+```
+.kiro/specs/
+├── requirements.md
+├── design.md
+├── tasks.md
+└── diagrams/
+    └── architecture.svg
 ```
 
-For detailed workflow instructions, see [PDF Chunking Guide](../../docs/guides/pdf-chunking-workflow.md) and [PDF_CHUNKER.md](./PDF_CHUNKER.md).
-
-Useful flags:
+### 2. Build the Handbook
 
 ```bash
-yarn handbook build --allow-warnings           # (default) build despite metadata warnings
-yarn handbook index --out docs/handbook/index.md
-yarn handbook changes --since v1.2.0           # also list spec files changed since a git ref
-handbook --config path/to/handbook.yml build   # use an alternate config
-yarn handbook chunk --auto-size                # auto-detect chunk size based on PDF
+handbook build
+```
+
+Output:
+
+- `handbook.md` — Assembled Markdown with indexes and cross-references
+- `handbook.pdf` — Formatted PDF (if Pandoc + LaTeX installed)
+- `handbook.lock.json` — Change tracking
+
+### 3. Review & Annotate
+
+- Print or upload the PDF to a tablet (reMarkable, iPad, etc.)
+- Annotate with handwritten notes and feedback
+- Collect marked-up PDFs from reviewers
+
+### 4. Process Notes
+
+_Future: Integrate with Claude/Opus to extract annotations and process back into specs._
+
+Currently, use the marked-up PDFs as review artifacts and manually incorporate feedback into your spec files.
+
+## Usage
+
+### CLI
+
+```bash
+handbook build                  # Generate handbook + PDF
+handbook validate              # Check metadata and cross-references
+handbook index                 # Print spec / requirement / task indexes
+handbook changes               # Report changed specs since last build
+handbook chunk                 # Split PDF into 1–4 MB chunks for upload
+```
+
+### Library
+
+```typescript
+import {
+  loadSpecifications,
+  renderHandbook,
+  generateIndexes,
+  validateReferences,
+  chunkPdf,
+} from "@just-ak/kiro-spec-handbook";
+
+// Load specs from .kiro/specs
+const specs = await loadSpecifications("./specs");
+
+// Validate references and metadata
+const errors = await validateReferences(specs);
+if (errors.length > 0) {
+  console.error("Validation errors:", errors);
+}
+
+// Generate indexes
+const indexes = generateIndexes(specs);
+
+// Render handbook
+const handbook = await renderHandbook(specs, {
+  title: "My Project Handbook",
+  includeArchitecture: true,
+});
+
+// Split PDF for upload
+const chunks = await chunkPdf("./handbook.pdf", {
+  size: 4, // 4 MB per chunk
+  output: "./chunks",
+});
 ```
 
 ## Configuration
 
-Configuration lives in [`.kiro/handbook.yml`](../../.kiro/handbook.yml). It controls the
-title, source/output paths, PDF options (A4, notes pages, LaTeX template, TOC depth),
-which indexes to emit, traceability, and git history depth. Sensible defaults apply when
-the file or individual keys are absent.
+Create `.kiro/handbook.yml` to customize:
 
-## How it works
+```yaml
+title: "My Handbook"
+specs_dir: ".kiro/specs"
+output_dir: "./handbook"
+output_pdf: "handbook.pdf"
 
+pdf:
+  paper_size: "A4" # A4 or Letter
+  notes_pages: false # Add blank notes pages between specs
+  toc_depth: 2 # Table of contents depth
+  latex_template: "" # Custom LaTeX template (templates/handbook.latex)
+
+indexes:
+  architecture: true # Include architecture overview
+  specs: true # Include spec index
+  requirements: true # Include requirement index
+  tasks: true # Include task index
+  diagrams: true # Include diagram index
+  traceability: true # Include traceability matrix
+
+git:
+  include_history: true # Include git changelog
+  history_depth: 50 # Number of commits to include
 ```
-.kiro/specs/**            scanner.ts    ->  parsed Spec model (requirements, tasks, diagrams)
-   requirements.md        markdown.ts   ->  requirements + tasks + requirement links
-   design.md              metadata.ts   ->  stable spec IDs + front matter
-   tasks.md               diagrams.ts   ->  SVG discovery + figure numbering
-   *.svg                  indexer.ts    ->  spec / requirement / task / diagram indexes
-                          references.ts ->  cross-reference hyperlinks + anchors
-                          git.ts        ->  revision history + change log
-                          renderer.ts   ->  assembled Markdown + Pandoc/LaTeX -> PDF
-                          pdf-chunker.ts -> split PDF into 1-4 MB chunks
-                          lock.ts       ->  handbook.lock.json (delta detection)
-```
 
-### Stable identifiers
+All settings are optional — sensible defaults apply.
 
-Every spec has a **stable ID** that never depends on filenames or page numbers:
+## Spec Front Matter
 
-1. If a spec markdown file declares `spec_id` in YAML front matter, that value is used.
-2. Otherwise the ID is derived deterministically from the spec's **directory name**:
-   `service-charge-reconciliation` → `SPEC-SERVICE-CHARGE-RECONCILIATION`.
-
-Requirement, task, and diagram IDs are derived from the spec ID plus their in-document
-number (`SPEC-STATEMENTS:R3`, `SPEC-STATEMENTS:T4.1`, `FIG-STATEMENTS-2`).
-
-### Front matter
-
-Optional, recognised on any spec markdown file:
+Add optional metadata to any spec Markdown file:
 
 ```yaml
 ---
 spec_id: SPEC-RESERVE-001
 title: Reserve Funds
-version: "1.0" # quote versions so YAML preserves "1.0" (not 1)
+version: "1.0"
 status: draft
 ---
+# Reserve Funds
+
+Your spec content...
 ```
 
-`---` used as a section divider _inside_ a document is left untouched — only a block at
-the very top of the file is treated as front matter.
+If you don't specify `spec_id`, it's derived deterministically from the directory name: `reserve-funds` → `SPEC-RESERVE-FUNDS`.
 
-### Generated handbook structure
+## Identifiers
 
-Cover → Document Information → Revision History → Table of Contents → Architecture
-Overview → Specification Index → Requirements Index → Tasks Index → Diagram Index →
-Specifications → Architecture Decisions → Traceability Matrix → Git Change History →
-Appendices.
+Every artifact in the handbook gets a stable ID that never depends on filenames or page numbers:
 
-The PDF is A4, set in the Roboto sans-serif family, with a clickable TOC, PDF bookmarks,
-searchable text, per-page headers carrying the spec ID, and a footer with revision +
-build date. SVG diagrams and rendered mermaid diagrams are embedded as figures, and the
-(large) Tasks Index is typeset at 8pt. Interleaved lined "notes" pages for handwritten
-review are available via `pdf.notes_pages: true` in the config (off by default).
+- Specs: `SPEC-RESERVE-FUNDS`
+- Requirements: `SPEC-RESERVE-FUNDS:R1`, `SPEC-RESERVE-FUNDS:R2`
+- Tasks: `SPEC-RESERVE-FUNDS:T1`, `SPEC-RESERVE-FUNDS:T1.1`
+- Diagrams: `FIG-RESERVE-FUNDS-1`
 
-### Determinism
+Use these IDs for cross-referencing in your specs and for tracking feedback.
 
-Builds are deterministic: specs are sorted by ID, content hashes are stable, and the
-build date is taken from `config.build_date`, `SOURCE_DATE_EPOCH`, or the last git commit
-date (in that order). This makes the output repeatable in CI.
+## Example Workflow
 
-### `handbook.lock.json`
+### Step 1: Write Specs
 
-After every build a lock file is written to the output directory containing, per spec:
-`spec_id`, `title`, `content_hash`, `last_published`, and `last_page`. The next build
-compares content hashes to report what was **added / changed / removed**, enabling future
-delta printing (only reprint the specs that changed). `last_published` advances only when
-a spec's content actually changes.
+Create `.kiro/specs/reserve-funds/design.md`:
 
-## Tests
+```markdown
+# Reserve Fund Design
+
+## Overview
+
+Describes the reserve fund reconciliation process.
+
+## Requirements
+
+R1. System shall track reserve fund balance daily
+R2. System shall validate adjustments against audit trail
+
+## Tasks
+
+T1. Implement balance calculation
+T1.1. Add unit tests
+T2. Create adjustment validation
+```
+
+### Step 2: Generate Handbook
 
 ```bash
-npm run -w kiro-handbook test
+handbook build
 ```
 
-Unit tests cover ID derivation, markdown parsing, cross references, indexing, validation,
-the lock/delta logic, Markdown assembly, and PDF chunking. An integration test drives the
-scanner over a temporary fixture spec tree.
+Creates `handbook.pdf` with your specs, automatically indexed and cross-referenced.
 
-## Contributing & Publishing
+### Step 3: Annotate
 
-This is an open-source npm package. Contributions are welcome.
+Upload `handbook.pdf` to your tablet. Review and mark it up. Example annotations:
 
-- **For users**: See [USAGE.md](./USAGE.md) for how to use this package
-- **For contributors**: See [PUBLISHING.md](./PUBLISHING.md) for release process and how to publish updates
+![Example annotations on PDF](./ExampleNotes.png)
+
+### Step 4: Collect & Process
+
+Gather marked-up PDFs from reviewers. Process annotations:
+
+```bash
+# Extract text and handwriting from PDFs
+# (future integration with Claude/Opus)
+
+# For now, manually review marked-up PDFs and update specs accordingly
+```
+
+### Step 5: Rebuild & Share
+
+After incorporating feedback, rebuild:
+
+```bash
+handbook build
+handbook chunk  # If uploading to Kiro as attachments
+```
+
+## PDF Chunking
+
+For projects with large PDFs, split into 4MB chunks suitable for Kiro attachments:
+
+```bash
+# Auto-detect optimal chunk size
+handbook chunk
+
+# Or specify a size
+handbook chunk --size 3              # 3 MB chunks
+handbook chunk --size 4 --dry-run    # Preview without creating files
+```
+
+Output:
+
+- `handbook_chunk_1_of_N.pdf`
+- `handbook_chunk_2_of_N.pdf`
+- etc.
+
+## Change Detection
+
+Track what changed between builds:
+
+```bash
+# See specs changed since last build
+handbook changes
+
+# See specs changed since a specific git commit or tag
+handbook changes --since v1.2.0
+```
+
+The lock file (`handbook.lock.json`) contains content hashes and timestamps, enabling delta printing (print only changed specs).
+
+## Testing
+
+```bash
+npm run test
+```
+
+46 tests covering ID derivation, Markdown assembly, cross-references, indexing, validation, PDF chunking, and lock file logic.
+
+## Publishing
+
+### For npm
+
+This package is published to GitHub Packages. To publish updates:
+
+```bash
+# Bump version (creates git tag)
+npm version patch
+
+# Build and test
+npm run build
+npm run test
+
+# Publish
+npm publish
+```
+
+See [GitHub Packages setup](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry) for authentication.
+
+## Troubleshooting
+
+**"Cannot find Pandoc"**
+
+- Install Pandoc: `brew install pandoc` (macOS) or `apt-get install pandoc` (Linux)
+- The tool still works without it (outputs Markdown, skips PDF)
+
+**"Cannot find LaTeX"**
+
+- Install: `brew install --cask mactex-no-gui` or `curl -sL https://yihui.org/tinytex/install-bin-unix.sh | sh`
+- Alternatively, use the system LaTeX if installed
+
+**"Cannot find mermaid-cli (`mmdc`)"**
+
+- Install dev dependencies: `npm install`
+- Mermaid blocks are shown as code blocks if `mmdc` is missing
+
+**"Specs not found"**
+
+- Verify specs are in `.kiro/specs/` (or configured path in `.kiro/handbook.yml`)
+- Check that Markdown files are named `*.md`
+
+## FAQ
+
+**Q: Can I use this without a tablet?**
+A: Yes. The PDF is printable or viewable on any device. Tablet annotation is optional but useful for collaborative review.
+
+**Q: How do I process handwritten notes from tablets?**
+A: Currently manual — review marked-up PDFs and update specs. Future: Claude/Opus integration to extract and process annotations automatically.
+
+**Q: Does this support collaboration?**
+A: Yes. Share the PDF with reviewers, collect marked-up copies, and incorporate feedback. The lock file helps identify what changed between reviews.
+
+**Q: Can I customize the PDF layout?**
+A: Yes. Provide a custom LaTeX template in `.kiro/handbook.yml` (default: `templates/handbook.latex`).
+
+**Q: What if my specs are huge?**
+A: The tool scales to large spec trees. Use `handbook chunk` to split PDFs for upload or sharing.
+
+## License
+
+MIT
+
+## Support
+
+- **Issues:** https://github.com/just-ak/kiro-spec-handbook/issues
+- **GitHub:** https://github.com/just-ak/kiro-spec-handbook

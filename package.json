@@ -29,19 +29,19 @@
     "templates"
   ],
   "main": "dist/index.js",
-  "name": "@just-ak/kiro-handbook",
+  "name": "@just-ak/kiro-spec-handbook",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/just-ak/kiro-handbooks.git"
+    "url": "https://github.com/just-ak/kiro-spec-handbook.git"
   },
   "bugs": {
-    "url": "https://github.com/just-ak/kiro-handbooks/issues"
+    "url": "https://github.com/just-ak/kiro-spec-handbook/issues"
   },
-  "homepage": "https://github.com/just-ak/kiro-handbooks#readme",
+  "homepage": "https://github.com/just-ak/kiro-spec-handbook#readme",
   "keywords": [
     "kiro",
     "aws",
