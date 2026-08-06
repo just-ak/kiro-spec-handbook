@@ -12,7 +12,7 @@
     "js-yaml": "^4.1.0",
     "pdf-lib": "^1.17.1"
   },
-  "description": "Specification Handbook Publisher — converts Kiro specs into an indexed, printable PDF handbook.",
+  "description": "Specification Handbook Publisher — converts Kiro specs into an indexed, printable PDF handbook for review and annotation on tablets.",
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^11.16.0",
     "@semantic-release/changelog": "^7.0.0",
