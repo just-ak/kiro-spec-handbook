@@ -55,7 +55,8 @@
     "documentation",
     "markdown",
     "mermaid",
-    "spec-development"
+    "spec-development",
+    "tablet-annotation"
   ],
   "author": "just-ak",
   "license": "MIT",
