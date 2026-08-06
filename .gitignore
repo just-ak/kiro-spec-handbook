@@ -3,3 +3,4 @@ cdk.out
 exampleData
 .DS_Store
 dist
+examples
