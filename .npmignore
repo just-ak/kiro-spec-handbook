@@ -1,0 +1,30 @@
+# Development
+test/
+.git
+.gitignore
+.env
+.env.local
+.npmignore
+
+# Configuration
+tsconfig.json
+vitest.config.ts
+ExampleNotes.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+
+# Build artifacts (we only include dist)
+src/
+
+# Node modules (standard npm behavior)
+node_modules/

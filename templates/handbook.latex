@@ -1,0 +1,121 @@
+%% Ledgiventa Specification Handbook — Pandoc LaTeX template (xelatex)
+%% A4, clickable TOC + PDF bookmarks, searchable text, per-page spec-id header,
+%% version/build-date footer, SVG-derived figures, reMarkable-friendly margins.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb} % provides \square / \boxtimes used by task-list checkboxes
+\usepackage{fontspec}
+% Sans-serif body/headings using Roboto (ships with the TeX `roboto` package, no
+% system font needed). sfdefault makes the sans family the document default.
+\usepackage[sfdefault]{roboto}
+\usepackage[a4paper,margin=22mm,headheight=15pt]{geometry}
+\usepackage{pdflscape} % rotate wide index/diagram pages to landscape
+% Command wrappers (not a raw environment) so pandoc still processes the
+% markdown tables/images placed between them.
+\newcommand{\blandscape}{\begin{landscape}}
+\newcommand{\elandscape}{\end{landscape}}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+% --- Table support (mirrors pandoc's own auto-injected preamble) ---
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables (pandoc marks captionless longtables \LTcaptype=none)
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{iftex}
+
+% --- Pandoc compatibility macros (custom templates must provide these) ---
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% Scale every embedded diagram to the available width (fills the landscape page),
+% capped at the page height so tall diagrams don't overflow. Custom templates do
+% NOT receive pandoc's own \pandocbounded, so we define a width-filling one here.
+\usepackage{adjustbox}
+\newcommand{\pandocbounded}[1]{%
+  \adjustbox{width=\linewidth,totalheight=0.9\textheight,keepaspectratio}{#1}}
+\providecommand{\passthrough}[1]{#1}
+% Syntax-highlighting macros (Shaded / Highlighting environments + token colours).
+% Pandoc fills this in when the document contains highlighted code; empty otherwise.
+$highlighting-macros$
+% Newer pandoc wraps images so they fit the text width.
+\setkeys{Gin}{width=\linewidth,height=\textheight,keepaspectratio}
+
+% --- Colours / links ---
+\definecolor{linkblue}{RGB}{0,51,153}
+\usepackage[unicode,colorlinks=true,linkcolor=linkblue,urlcolor=linkblue,%
+  citecolor=linkblue,bookmarks=true,bookmarksnumbered=true,%
+  pdftitle={$title$},pdfauthor={$author$}]{hyperref}
+
+% --- Header / footer ---
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\small $title$}
+$if(header-spec-id)$
+% \rightmark carries the current subsection (the spec heading, which includes the spec id).
+\fancyhead[R]{\small\nouppercase{\rightmark}}
+$else$
+\fancyhead[R]{\small\nouppercase{\leftmark}}
+$endif$
+\fancyfoot[L]{\small v$revision$}
+\fancyfoot[C]{\small\thepage}
+\fancyfoot[R]{\small $date$}
+
+% --- Blank, lightly-lined notes page for handwritten review / reMarkable ---
+\newcommand{\notespage}{%
+  \clearpage
+  \thispagestyle{fancy}
+  \section*{Notes}%
+  \addcontentsline{toc}{subsection}{Notes}%
+  \vspace{0.5em}%
+  \foreach \n in {1,...,26}{\noindent\rule{\linewidth}{0.15pt}\par\vspace{1.05em}}%
+  \clearpage
+}
+% \foreach requires pgffor.
+\usepackage{pgffor}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.6em}
+
+\setlength{\emergencystretch}{3em}
+\hyphenpenalty=2000
+
+\begin{document}
+
+% --- Cover ---
+\begin{titlepage}
+  \centering
+  \vspace*{4cm}
+  {\Huge\bfseries $title$\par}
+  \vspace{0.8cm}
+  $if(subtitle)${\Large $subtitle$\par}$endif$
+  \vspace{2cm}
+  $if(author)${\large $author$\par}$endif$
+  \vfill
+  {\normalsize Build date: $date$\par}
+  {\normalsize Source revision: $revision$\par}
+  \vspace{1cm}
+  {\footnotesize Generated automatically from Kiro specifications. Do not edit by hand.\par}
+\end{titlepage}
+
+% --- Table of contents (clickable) ---
+\cleardoublepage
+\pdfbookmark[0]{Table of Contents}{toc}
+\tableofcontents
+\clearpage
+
+$body$
+
+\end{document}

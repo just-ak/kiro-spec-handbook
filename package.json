@@ -1,0 +1,70 @@
+{
+  "bin": {
+    "handbook": "dist/index.js",
+    "pdf-chunker": "dist/pdf-chunker-cli.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "execa": "^9.5.1",
+    "globby": "^14.0.2",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "pdf-lib": "^1.17.1"
+  },
+  "description": "Specification Handbook Publisher — converts Kiro specs into an indexed, printable PDF handbook.",
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.16.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.2",
+    "typescript": "~5.6.3",
+    "vitest": "^2.1.4"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "main": "dist/index.js",
+  "name": "@just-ak/kiro-handbook",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/just-ak/kiro-handbooks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/just-ak/kiro-handbooks/issues"
+  },
+  "homepage": "https://github.com/just-ak/kiro-handbooks#readme",
+  "keywords": [
+    "kiro",
+    "aws",
+    "specifications",
+    "handbook",
+    "pdf",
+    "documentation",
+    "markdown",
+    "mermaid",
+    "spec-development"
+  ],
+  "author": "just-ak",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "chunk": "tsx src/pdf-chunker-cli.ts",
+    "handbook": "tsx src/index.ts",
+    "lint": "eslint --ext .ts src",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "version": "0.1.0"
+}
