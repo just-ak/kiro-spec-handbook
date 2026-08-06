@@ -14,39 +14,39 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "conventionalcommits",
-        "releaseRules": [
-          {
-            "type": "feat",
-            "release": "minor"
-          },
-          {
-            "type": "fix",
-            "release": "patch"
-          },
-          {
-            "type": "perf",
-            "release": "patch"
-          },
-          {
-            "type": "refactor",
-            "release": "patch"
-          },
-          {
-            "type": "chore",
-            "release": false
-          },
-          {
-            "type": "docs",
-            "release": false
-          }
-        ],
         "parserOpts": {
           "noteKeywords": [
             "BREAKING CHANGE",
             "BREAKING CHANGES"
           ]
-        }
+        },
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          {
+            "release": "minor",
+            "type": "feat"
+          },
+          {
+            "release": "patch",
+            "type": "fix"
+          },
+          {
+            "release": "patch",
+            "type": "perf"
+          },
+          {
+            "release": "patch",
+            "type": "refactor"
+          },
+          {
+            "release": false,
+            "type": "chore"
+          },
+          {
+            "release": false,
+            "type": "docs"
+          }
+        ]
       }
     ],
     [
@@ -56,29 +56,29 @@
         "presetConfig": {
           "types": [
             {
-              "type": "feat",
+              "hidden": false,
               "section": "✨ Features",
-              "hidden": false
+              "type": "feat"
             },
             {
-              "type": "fix",
+              "hidden": false,
               "section": "🐛 Bug Fixes",
-              "hidden": false
+              "type": "fix"
             },
             {
-              "type": "perf",
+              "hidden": false,
               "section": "⚡ Performance",
-              "hidden": false
+              "type": "perf"
             },
             {
-              "type": "refactor",
+              "hidden": false,
               "section": "♻️ Refactoring",
-              "hidden": false
+              "type": "refactor"
             },
             {
-              "type": "docs",
+              "hidden": false,
               "section": "📚 Documentation",
-              "hidden": false
+              "type": "docs"
             }
           ]
         }
@@ -94,8 +94,8 @@
       "@semantic-release/npm",
       {
         "pkgRoot": ".",
-        "tarballDir": "dist",
-        "publish": true
+        "publish": true,
+        "tarballDir": "dist"
       }
     ],
     [
@@ -119,4 +119,3 @@
     ]
   ]
 }
-
