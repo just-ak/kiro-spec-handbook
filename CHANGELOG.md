@@ -1,3 +1,8 @@
+## 0.3.0-alpha.1 (2026-08-07)
+
+* feat: change release processes ([3e7606b](https://github.com/just-ak/kiro-spec-handbook/commit/3e7606b))
+* feat: change release processes ([aafc667](https://github.com/just-ak/kiro-spec-handbook/commit/aafc667))
+
 ## 0.2.0 (2026-08-07)
 
 * feat: change release processes ([9089ec7](https://github.com/just-ak/kiro-spec-handbook/commit/9089ec7))
