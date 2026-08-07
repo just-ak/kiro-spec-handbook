@@ -55,7 +55,7 @@ The release process for kiro-spec-handbook consists of two coordinated GitHub Ac
 #### Acceptance Criteria
 
 1. WHEN the Version & Handbook workflow runs THEN it SHALL checkout the repository with full git history (fetch-depth: 0).
-2. WHEN checkout completes THEN it SHALL install Node.js 20 and npm dependencies.
+2. WHEN checkout completes THEN it SHALL install Node.js 24 and npm dependencies.
 3. WHEN dependencies are installed THEN it SHALL run `npm run build` to compile TypeScript.
 4. WHEN build completes THEN it SHALL run `npm run test` to execute all test suites.
 5. IF the build or tests fail THEN the Version & Handbook workflow SHALL stop and NOT proceed to versioning or release creation.
@@ -122,7 +122,7 @@ The release process for kiro-spec-handbook consists of two coordinated GitHub Ac
 
 1. WHEN a GitHub Release is published (not just created) THEN the Publish workflow (`publish.yml`) SHALL be triggered via the `release: [published]` event.
 2. WHEN the Publish workflow is triggered THEN it SHALL checkout the repository at the tag corresponding to the release.
-3. WHEN checkout completes THEN the workflow SHALL install Node.js 20 and npm dependencies.
+3. WHEN checkout completes THEN the workflow SHALL install Node.js 24 and npm dependencies.
 4. WHEN dependencies are installed THEN the workflow SHALL run `npm run build` to compile the package.
 5. WHEN build completes THEN the workflow SHALL run `npm publish` with npm registry-url set to GitHub Packages.
 6. IF the publish step succeeds THEN the package SHALL be available in GitHub Packages under the namespace/scope configured in `package.json` (e.g., `@just-ak/kiro-spec-handbook`).

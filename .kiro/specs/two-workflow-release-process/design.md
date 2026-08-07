@@ -146,7 +146,7 @@ The release process maintains implicit state through:
 
 2. **Setup Node.js**
    - Uses `actions/setup-node@v4`
-   - Node.js v20 (LTS)
+   - Node.js v24 (LTS)
    - npm caching for faster builds
 
 3. **Install Dependencies**
@@ -193,7 +193,7 @@ The release process maintains implicit state through:
 
 2. **Setup Node.js**
    - Uses `actions/setup-node@v4`
-   - Node.js v20 (LTS)
+   - Node.js v24 (LTS)
    - `registry-url: https://npm.pkg.github.com` — configure npm registry
    - npm caching for faster builds
 

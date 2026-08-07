@@ -3,7 +3,7 @@
 ## Stack
 
 - **Language:** TypeScript (ES2022, `NodeNext` modules), compiled with `tsc`.
-- **Runtime:** Node.js ≥ 20. Distributed as ESM (`"type": "module"`).
+- **Runtime:** Node.js ≥ 24. Distributed as ESM (`"type": "module"`).
 - **CLI:** [commander](https://github.com/tj/commander.js) exposes two binaries —
   `handbook` and `pdf-chunker`.
 - **Testing:** [vitest](https://vitest.dev). Run once with `vitest run`.
