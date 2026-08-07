@@ -1,3 +1,10 @@
+## 0.2.0 (2026-08-07)
+
+* feat: change release processes ([9089ec7](https://github.com/just-ak/kiro-spec-handbook/commit/9089ec7))
+* feat: change release processes ([0e709da](https://github.com/just-ak/kiro-spec-handbook/commit/0e709da))
+* feat: upgrade node ([89a31b8](https://github.com/just-ak/kiro-spec-handbook/commit/89a31b8))
+* feat: Workflow Spec & Updates ([191d973](https://github.com/just-ak/kiro-spec-handbook/commit/191d973))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
