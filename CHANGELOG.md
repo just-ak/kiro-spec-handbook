@@ -1,3 +1,7 @@
+## <small>0.3.1 (2026-08-07)</small>
+
+* fix: trigger publish workflow on any release event ([0bda3aa](https://github.com/just-ak/kiro-spec-handbook/commit/0bda3aa))
+
 ## 0.3.0 (2026-08-07)
 
 * Merge pull request #1 from just-ak/alpha ([e754e7d](https://github.com/just-ak/kiro-spec-handbook/commit/e754e7d)), closes [#1](https://github.com/just-ak/kiro-spec-handbook/issues/1)
