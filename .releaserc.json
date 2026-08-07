@@ -91,6 +91,13 @@
       }
     ],
     [
+      "@semantic-release/npm",
+      {
+        "pkgRoot": ".",
+        "publish": true
+      }
+    ],
+    [
       "@semantic-release/git",
       {
         "assets": [
