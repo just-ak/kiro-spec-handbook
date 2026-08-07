@@ -1,3 +1,9 @@
+## 0.4.0 (2026-08-07)
+
+* feat: change release processes ([7295be5](https://github.com/just-ak/kiro-spec-handbook/commit/7295be5))
+* feat: change release processes ([6bb8b0e](https://github.com/just-ak/kiro-spec-handbook/commit/6bb8b0e))
+* chore: have semantic-release publish npm directly ([d593c9d](https://github.com/just-ak/kiro-spec-handbook/commit/d593c9d))
+
 ## <small>0.3.1 (2026-08-07)</small>
 
 * fix: trigger publish workflow on any release event ([0bda3aa](https://github.com/just-ak/kiro-spec-handbook/commit/0bda3aa))
