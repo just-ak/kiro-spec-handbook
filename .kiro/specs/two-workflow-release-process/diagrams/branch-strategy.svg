@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1400 850" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .branch-line { stroke: #333; stroke-width: 3; fill: none; }
+      .merge-commit { fill: #fff59d; stroke: #f57f17; stroke-width: 2; }
+      .release { fill: #c8e6c9; stroke: #2e7d32; stroke-width: 2; }
+      .prerelease { fill: #ffe0b2; stroke: #e65100; stroke-width: 2; }
+      .commit { fill: #bbdefb; stroke: #1565c0; stroke-width: 1.5; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .label { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; text-anchor: middle; }
+      .version { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .merge-arrow { stroke: #f57f17; stroke-width: 2.5; fill: none; marker-end: url(#merge-arrowhead); stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+    <marker id="merge-arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#f57f17" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="35" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-anchor: middle;">Three-Branch Release Strategy</text>
+
+  <!-- Main Branch -->
+  <g id="main-branch">
+    <!-- Branch line -->
+    <line x1="50" y1="100" x2="1350" y2="100" class="branch-line"/>
+    
+    <!-- Branch label -->
+    <text x="30" y="110" class="label">main</text>
+    <text x="30" y="128" class="version">(Production)</text>
+
+    <!-- Commits on main -->
+    <circle cx="150" cy="100" r="8" class="commit"/>
+    <circle cx="250" cy="100" r="8" class="commit"/>
+    <circle cx="350" cy="100" r="8" class="commit"/>
+    
+    <!-- First Release -->
+    <rect x="380" y="85" width="80" height="30" class="release" rx="5"/>
+    <text x="420" y="105" class="version">v1.0.0</text>
+
+    <!-- More commits -->
+    <circle cx="500" cy="100" r="8" class="commit"/>
+    <circle cx="580" cy="100" r="8" class="commit"/>
+
+    <!-- Second Release -->
+    <rect x="610" y="85" width="80" height="30" class="release" rx="5"/>
+    <text x="650" y="105" class="version">v1.1.0</text>
+
+    <!-- More commits -->
+    <circle cx="730" cy="100" r="8" class="commit"/>
+    <circle cx="810" cy="100" r="8" class="commit"/>
+
+    <!-- Third Release (breaking change) -->
+    <rect x="840" y="85" width="80" height="30" class="release" rx="5"/>
+    <text x="880" y="105" class="version">v2.0.0</text>
+
+    <!-- More commits -->
+    <circle cx="1000" cy="100" r="8" class="commit"/>
+    <circle cx="1080" cy="100" r="8" class="commit"/>
+
+    <!-- Fourth Release (minor) -->
+    <rect x="1110" y="85" width="80" height="30" class="release" rx="5"/>
+    <text x="1150" y="105" class="version">v2.1.0</text>
+
+    <!-- Final commits -->
+    <circle cx="1250" cy="100" r="8" class="commit"/>
+    <circle cx="1320" cy="100" r="8" class="commit"/>
+  </g>
+
+  <!-- Beta Branch -->
+  <g id="beta-branch">
+    <!-- Branch line -->
+    <line x1="50" y1="280" x2="1350" y2="280" class="branch-line"/>
+    
+    <!-- Branch label -->
+    <text x="30" y="290" class="label">beta</text>
+    <text x="30" y="308" class="version">(Pre-release)</text>
+
+    <!-- Merge from alpha 1 -->
+    <circle cx="150" cy="280" r="8" class="commit"/>
+    
+    <!-- Beta releases -->
+    <rect x="180" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="225" y="285" class="version">v1.0.0-beta.1</text>
+
+    <circle cx="310" cy="280" r="8" class="commit"/>
+    
+    <rect x="340" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="385" y="285" class="version">v1.0.0-beta.2</text>
+
+    <circle cx="470" cy="280" r="8" class="commit"/>
+    
+    <rect x="500" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="545" y="285" class="version">v1.1.0-beta.1</text>
+
+    <!-- Merge up to main -->
+    <path d="M 620 280 Q 650 150 650 100" class="merge-arrow"/>
+    <text x="630" y="200" class="version">Merge to main</text>
+
+    <circle cx="700" cy="280" r="8" class="commit"/>
+
+    <!-- Continue beta pre-releases -->
+    <rect x="730" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="775" y="285" class="version">v2.0.0-beta.1</text>
+
+    <circle cx="860" cy="280" r="8" class="commit"/>
+    
+    <rect x="890" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="935" y="285" class="version">v2.0.0-beta.2</text>
+
+    <!-- Merge to main -->
+    <path d="M 1010 280 Q 1040 150 880 100" class="merge-arrow"/>
+    <text x="980" y="200" class="version">Merge to main</text>
+
+    <circle cx="1080" cy="280" r="8" class="commit"/>
+    
+    <rect x="1110" y="265" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="1155" y="285" class="version">v2.1.0-beta.1</text>
+  </g>
+
+  <!-- Alpha Branch -->
+  <g id="alpha-branch">
+    <!-- Branch line -->
+    <line x1="50" y1="460" x2="1350" y2="460" class="branch-line"/>
+    
+    <!-- Branch label -->
+    <text x="30" y="470" class="label">alpha</text>
+    <text x="30" y="488" class="version">(Experimental)</text>
+
+    <!-- Alpha pre-releases -->
+    <circle cx="120" cy="460" r="8" class="commit"/>
+    
+    <rect x="150" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="195" y="465" class="version">v1.0.0-alpha.1</text>
+
+    <circle cx="280" cy="460" r="8" class="commit"/>
+    
+    <rect x="310" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="355" y="465" class="version">v1.0.0-alpha.2</text>
+
+    <!-- Merge to beta -->
+    <path d="M 430 460 Q 440 370 225 280" class="merge-arrow"/>
+    <text x="400" y="370" class="version">Merge to beta</text>
+
+    <circle cx="500" cy="460" r="8" class="commit"/>
+    
+    <rect x="530" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="575" y="465" class="version">v1.1.0-alpha.1</text>
+
+    <circle cx="660" cy="460" r="8" class="commit"/>
+    
+    <rect x="690" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="735" y="465" class="version">v1.1.0-alpha.2</text>
+
+    <!-- Merge to beta -->
+    <path d="M 810 460 Q 820 370 545 280" class="merge-arrow"/>
+    <text x="780" y="370" class="version">Merge to beta</text>
+
+    <circle cx="880" cy="460" r="8" class="commit"/>
+    
+    <rect x="910" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="955" y="465" class="version">v2.0.0-alpha.1</text>
+
+    <circle cx="1040" cy="460" r="8" class="commit"/>
+    
+    <rect x="1070" y="445" width="90" height="30" class="prerelease" rx="5"/>
+    <text x="1115" y="465" class="version">v2.0.0-alpha.2</text>
+
+    <!-- Continue -->
+    <circle cx="1200" cy="460" r="8" class="commit"/>
+    <circle cx="1280" cy="460" r="8" class="commit"/>
+  </g>
+
+  <!-- Version Numbering Explanation -->
+  <g transform="translate(50, 560)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold;">Version Numbering Rules:</text>
+    
+    <rect x="0" y="15" width="1300" height="120" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1" rx="5"/>
+    
+    <text x="20" y="35" style="font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Main Branch (Production):</text>
+    <text x="20" y="55" class="version" text-anchor="start">• Semantic versions: MAJOR.MINOR.PATCH (e.g., v1.0.0, v1.1.0, v2.0.0)</text>
+    <text x="20" y="72" class="version" text-anchor="start">• BREAKING CHANGE (commit !) → Major bump</text>
+    <text x="20" y="89" class="version" text-anchor="start">• feat: → Minor bump | fix:/perf:/refactor: → Patch bump</text>
+    
+    <text x="700" y="35" style="font-family: Arial, sans-serif; font-size: 13px; font-weight: bold;">Beta/Alpha Branches (Pre-releases):</text>
+    <text x="700" y="55" class="version" text-anchor="start">• Pre-release versions: MAJOR.MINOR.PATCH-BRANCH.N (e.g., v1.0.0-beta.2, v1.0.0-alpha.1)</text>
+    <text x="700" y="72" class="version" text-anchor="start">• Sequential counter increments per branch and base version</text>
+    <text x="700" y="89" class="version" text-anchor="start">• Merge to main produces next production version (non-prerelease)</text>
+  </g>
+
+  <!-- Release Flow Explanation -->
+  <g transform="translate(50, 720)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold;">Release Flow:</text>
+    
+    <rect x="0" y="15" width="1300" height="100" fill="#e8f5e9" stroke="#4caf50" stroke-width="1" rx="5"/>
+    
+    <text x="20" y="35" class="version" text-anchor="start">1. Developer pushes to feature branch → No workflow runs</text>
+    <text x="20" y="52" class="version" text-anchor="start">2. PR merged to main/beta/alpha → Version &amp; Handbook workflow runs (build, test, semantic-release)</text>
+    <text x="20" y="69" class="version" text-anchor="start">3. If version needed → Update files, commit [skip ci], create git tag, publish GitHub Release</text>
+    <text x="20" y="86" class="version" text-anchor="start">4. GitHub Release published → Publish workflow triggered → npm publish to GitHub Packages</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(50, 820)">
+    <circle cx="10" cy="0" r="6" class="commit"/>
+    <text x="20" y="5" class="version" text-anchor="start">Commit</text>
+
+    <rect x="90" y="-8" width="50" height="16" class="release" rx="3"/>
+    <text x="160" y="5" class="version" text-anchor="start">Production Release</text>
+
+    <rect x="350" y="-8" width="60" height="16" class="prerelease" rx="3"/>
+    <text x="425" y="5" class="version" text-anchor="start">Pre-release</text>
+
+    <line x1="570" y1="0" x2="600" y2="0" class="merge-arrow"/>
+    <text x="610" y="5" class="version" text-anchor="start">Merge to upstream branch</text>
+  </g>
+</svg>

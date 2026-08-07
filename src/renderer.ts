@@ -339,26 +339,46 @@ async function prepareMermaid(
 
 function diagramsSection(spec: Spec, images: Map<string, DiagramImage | null>): string {
   if (spec.diagrams.length === 0) return '';
-  const parts: string[] = ['### Diagrams', ''];
+  const parts: string[] = [];
+  // Emit the "### Diagrams" heading only once, and — for embedded figures — place
+  // it INSIDE the first landscape block so it stays on the same landscape page as
+  // the figure. Emitting it before \blandscape would strand it on the preceding
+  // portrait page, because entering landscape starts a new page.
+  const heading = '### Diagrams';
+  let headingEmitted = false;
+
   for (const d of spec.diagrams) {
     const img = images.get(d.id) ?? null;
     const anchor = anchors.diagram(d.figureNumber ?? 0);
     const caption = `Figure ${d.figureNumber ?? '?'}: ${d.caption}`;
-    const heading = `#### ${caption} {#${anchor}}`;
+
     if (img && img.converted) {
-      // A heading *inside* the landscape block forces the image onto a second
-      // page. Use an inline anchor span (keeps Diagram Index links working) plus
-      // the image's own caption, so the diagram gets the whole landscape page.
-      parts.push(landscape(`[]{#${anchor}}\n\n![${caption}](${img.markdownPath})`));
-    } else if (img) {
-      // SVG not embeddable in LaTeX — reference it and note the source path.
-      parts.push(heading, '');
-      parts.push(`_Diagram ${d.id} — source: \`${d.relPath}\` (SVG; install rsvg-convert to embed)._`);
+      const headPrefix = headingEmitted ? '' : `${heading}\n\n`;
+      headingEmitted = true;
+      // Empty-alt image so pandoc does NOT wrap it as an auto-numbered figure
+      // (which would prefix a second "Figure N:" that also mismatches our
+      // handbook-wide numbering). The caption is rendered manually with our own
+      // figure number so it matches the Diagram Index and cross references. The
+      // inline anchor span keeps those Diagram Index links working.
+      const figureCaption =
+        `\\begingroup\\centering\\small\\textbf{${caption}}\\par\\endgroup`;
+      parts.push(
+        landscape(`${headPrefix}[]{#${anchor}}\n\n![](${img.markdownPath})\n\n${figureCaption}`),
+      );
     } else {
-      parts.push(heading, '');
-      parts.push(`_Diagram ${d.id} — source: \`${d.relPath}\` (not embedded)._`);
+      // Portrait note (no landscape, so no clearpage) — the heading is safe here.
+      if (!headingEmitted) {
+        parts.push(heading, '');
+        headingEmitted = true;
+      }
+      parts.push(`#### ${caption} {#${anchor}}`, '');
+      parts.push(
+        img
+          ? `_Diagram ${d.id} — source: \`${d.relPath}\` (SVG; install rsvg-convert to embed)._`
+          : `_Diagram ${d.id} — source: \`${d.relPath}\` (not embedded)._`,
+      );
+      parts.push('');
     }
-    parts.push('');
   }
   return parts.join('\n');
 }

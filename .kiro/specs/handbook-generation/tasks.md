@@ -1,0 +1,39 @@
+# Implementation Plan
+
+- [x] 1. Configuration loading
+  - Load and normalise `handbook.yml`; locate repo and tool roots; apply defaults.
+  - _Requirements: 5.4_
+- [x] 2. Spec discovery and parsing
+  - [x] 2.1 Discover spec directories and classify documents
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [x] 2.2 Sort specs by stable id after discovery
+    - _Requirements: 1.5, 2.2_
+  - [x] 2.3 Compute deterministic content hashes
+    - _Requirements: 4.3_
+- [x] 3. Stable identifiers
+  - Derive spec ids from front matter or slug; derive requirement/task/diagram ids.
+  - _Requirements: 2.1, 2.2, 2.3, 2.4_
+- [x] 4. Indexes and cross-references
+  - [x] 4.1 Build specification, requirements, tasks, and diagram indexes
+    - _Requirements: 3.1_
+  - [x] 4.2 Linkify requirement references from tasks
+    - _Requirements: 3.2_
+  - [x] 4.3 Emit the traceability matrix
+    - _Requirements: 3.3_
+  - [x] 4.4 Assign handbook-wide figure numbers
+    - _Requirements: 3.4_
+- [x] 5. Deterministic assembly
+  - Order sections and separate parts with page breaks; resolve the build date.
+  - _Requirements: 4.1, 4.2_
+- [x] 6. Rendering and graceful degradation
+  - [x] 6.1 Assemble Markdown (pure) and write it to the output directory
+    - _Requirements: 4.1, 5.1_
+  - [x] 6.2 Detect Pandoc/LaTeX and render the PDF when available
+    - _Requirements: 5.1_
+  - [x] 6.3 Convert and embed SVG diagrams; reference them when no converter exists
+    - _Requirements: 5.2_
+  - [x] 6.4 Render mermaid via mmdc; fall back to fenced code when absent
+    - _Requirements: 5.3_
+- [x] 7. Lock file and delta detection
+  - Write `handbook.lock.json` and report added/changed/removed specs.
+  - _Requirements: 4.3_

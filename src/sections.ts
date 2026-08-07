@@ -6,6 +6,14 @@ import { extractH1 } from './markdown.js';
 import { parseFrontMatter } from './metadata.js';
 import { anchors } from './references.js';
 import { shiftHeadings } from './renderer.js';
+import { cell, delimiter, landscapeCompact, portraitCompact } from './table.js';
+import {
+  countChars,
+  countTokens,
+  countWords,
+  resolveProfiles,
+  type TokenizerProfile,
+} from './tokenizer.js';
 import type { Handbook, HandbookConfig } from './types.js';
 
 /** Turn a steering file name into a stable anchor slug. */
@@ -141,8 +149,11 @@ export async function steeringSection(config: HandbookConfig): Promise<string> {
   return lines.join('\n');
 }
 
-/** Appendices — consolidated reference-file listing. */
-export function appendices(handbook: Handbook): string {
+/**
+ * Appendices — consolidated reference-file listing plus any extra appendix
+ * subsections (e.g. the tokenizer summary), appended in order after Appendix A.
+ */
+export function appendices(handbook: Handbook, extra: string[] = []): string {
   const lines = ['# Appendices', '', '## Appendix A — Reference Files', ''];
   const refs = handbook.specs.flatMap((s) => s.references);
   if (refs.length === 0) {
@@ -152,5 +163,152 @@ export function appendices(handbook: Handbook): string {
     for (const r of refs) lines.push(`| ${r.specId} | \`${r.relPath}\` |`);
   }
   lines.push('');
+  for (const section of extra) {
+    if (section && section.trim()) {
+      lines.push(section.trim(), '');
+    }
+  }
+  return lines.join('\n');
+}
+
+interface TokenRow {
+  /** First-column identifier (spec id or steering file name). */
+  id: string;
+  /** Optional second-column detail (spec title); omitted for steering. */
+  title?: string;
+  chars: number;
+  words: number;
+  tokens: number[];
+}
+
+const fmt = (n: number): string => n.toLocaleString('en-US');
+
+/**
+ * Render one token table (specs or steering) on a compact landscape page,
+ * sorted largest-first by the primary model. Uses explicit column widths so the
+ * long spec ids sit in their own column and never collide with the title or the
+ * numeric columns.
+ */
+function tokenTable(
+  heading: string,
+  idLabel: string,
+  rows: TokenRow[],
+  profiles: TokenizerProfile[],
+  emptyNote: string,
+): string {
+  if (rows.length === 0) {
+    return [heading, '', emptyNote, ''].join('\n');
+  }
+
+  const showTitle = rows.some((r) => r.title && r.title.trim());
+
+  // Surface bloat: largest first, by the primary (first) model's token count.
+  const sorted = [...rows].sort((a, b) => (b.tokens[0] ?? 0) - (a.tokens[0] ?? 0));
+
+  const header =
+    `| ${idLabel} |` +
+    (showTitle ? ' Title |' : '') +
+    ' Chars | Words |' +
+    profiles.map((p) => ` ${cell(p.label)} |`).join('');
+
+  // Portrait keeps the running header/footer and reads better, but only fits a
+  // handful of model columns. Fall back to landscape when there are many models.
+  const portrait = profiles.length <= 3;
+
+  const widthCols: Array<{ w: number; align?: 'l' | 'r' | 'c' }> = [
+    { w: showTitle ? 34 : 26 },
+  ];
+  if (showTitle) widthCols.push({ w: 16 });
+  widthCols.push({ w: 8, align: 'r' }, { w: 8, align: 'r' });
+  for (const _ of profiles) widthCols.push({ w: 12, align: 'r' });
+
+  const tableLines = [header, delimiter(widthCols)];
+
+  const totals = { chars: 0, words: 0, tokens: profiles.map(() => 0) };
+  for (const row of sorted) {
+    const titleCell = showTitle ? ` ${cell(row.title ?? '')} |` : '';
+    const numeric = row.tokens.map((t) => ` ${fmt(t)} |`).join('');
+    tableLines.push(
+      `| ${cell(row.id)} |${titleCell} ${fmt(row.chars)} | ${fmt(row.words)} |${numeric}`,
+    );
+    totals.chars += row.chars;
+    totals.words += row.words;
+    row.tokens.forEach((t, i) => (totals.tokens[i] += t));
+  }
+
+  const totalTitle = showTitle ? ' |' : '';
+  const totalNumeric = totals.tokens.map((t) => ` **${fmt(t)}** |`).join('');
+  tableLines.push(
+    `| **Total** |${totalTitle} **${fmt(totals.chars)}** | **${fmt(totals.words)}** |${totalNumeric}`,
+  );
+
+  const wrap = portrait ? portraitCompact : landscapeCompact;
+  return wrap(tableLines, heading).join('\n');
+}
+
+/**
+ * Appendix B — Tokenizer Summary. Estimates token counts per spec and per
+ * steering document across the configured models, so authors can spot bloat.
+ * Returns '' when disabled in config.
+ */
+export async function tokenSummary(
+  handbook: Handbook,
+  config: HandbookConfig,
+): Promise<string> {
+  if (!config.tokenizer.enabled) return '';
+
+  const profiles = resolveProfiles(config.tokenizer.models, config.tokenizer.chars_per_token);
+
+  // Per-spec rows: all documents in a spec concatenated.
+  const specRows: TokenRow[] = handbook.specs.map((s) => {
+    const text = s.documents.map((d) => d.content).join('\n\n');
+    return {
+      id: s.id,
+      title: s.title,
+      chars: countChars(text),
+      words: countWords(text),
+      tokens: profiles.map((p) => countTokens(text, p)),
+    };
+  });
+
+  // Per-steering-doc rows.
+  const steeringRows: TokenRow[] = [];
+  if (config.source.steering) {
+    const steeringDir = resolveFromRepo(config, config.source.steering);
+    if (existsSync(steeringDir)) {
+      const files = (await globby('*.md', { cwd: steeringDir })).sort();
+      for (const f of files) {
+        const { content } = parseFrontMatter(readFileSync(join(steeringDir, f), 'utf8'));
+        steeringRows.push({
+          id: f,
+          chars: countChars(content),
+          words: countWords(content),
+          tokens: profiles.map((p) => countTokens(content, p)),
+        });
+      }
+    }
+  }
+
+  const ratios = profiles.map((p) => `${p.label} ≈ ${p.charsPerToken} chars/token`).join('; ');
+  const lines = [
+    '## Appendix B — Tokenizer Summary',
+    '',
+    'Estimated token counts for each specification and steering document, to help',
+    'identify bloat. Counts are deterministic approximations based on characters',
+    `per token (${ratios}). They are estimates, not exact tokenizer output.`,
+    '',
+  ];
+  lines.push(
+    tokenTable('### Specifications', 'Spec ID', specRows, profiles, '_No specifications found._'),
+  );
+  lines.push(
+    tokenTable(
+      '### Steering Documents',
+      'Document',
+      steeringRows,
+      profiles,
+      '_No steering documents found._',
+    ),
+  );
   return lines.join('\n');
 }

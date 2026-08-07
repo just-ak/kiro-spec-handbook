@@ -1,0 +1,26 @@
+# Implementation Plan
+
+- [x] 1. Token counting primitives
+  - Implement `countChars`, `countWords`, `countTokens` with platform-stable normalisation.
+  - _Requirements: 1.1, 1.2, 1.3_
+- [x] 2. Model profiles and resolution
+  - [x] 2.1 Define built-in Claude and GPT profiles
+    - _Requirements: 1.1, 2.1_
+  - [x] 2.2 Apply per-model `chars_per_token` overrides
+    - _Requirements: 2.2_
+  - [x] 2.3 Fall back to a generic profile for unknown keys
+    - _Requirements: 2.3_
+  - [x] 2.4 Default to a single model when none configured
+    - _Requirements: 2.4_
+- [x] 3. Summary appendix rendering
+  - [x] 3.1 Build per-spec and per-steering rows
+    - _Requirements: 3.1, 3.2_
+  - [x] 3.2 Sort largest-first and add a totals row
+    - _Requirements: 3.2, 3.3_
+  - [x] 3.3 Fold the summary into Appendices as Appendix B
+    - _Requirements: 3.1_
+  - [x] 3.4 Emit nothing when disabled
+    - _Requirements: 3.4_
+- [x] 4. Configuration
+  - Add the `tokenizer` block to config types and defaults.
+  - _Requirements: 2.1, 2.2, 3.4_

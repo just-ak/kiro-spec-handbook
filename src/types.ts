@@ -153,6 +153,14 @@ export interface HandbookConfig {
   traceability: {
     enabled: boolean;
   };
+  tokenizer: {
+    /** Emit the tokenizer summary appendix. */
+    enabled: boolean;
+    /** Model keys to tabulate (e.g. `opus-4.8`, `haiku`, `gpt-4o`). */
+    models: string[];
+    /** Optional per-model overrides for average characters-per-token. */
+    chars_per_token?: Record<string, number>;
+  };
   git: {
     history_limit: number;
     release_tag_glob: string;

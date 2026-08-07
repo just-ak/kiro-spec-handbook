@@ -1,0 +1,42 @@
+# Handbook configuration for kiro-spec-handbook's own specifications.
+# This project dogfoods its own tool: `handbook build` generates an
+# architecture handbook PDF from the specs under .kiro/specs.
+title: "Kiro Spec Handbook"
+subtitle: "Architecture & Specification Reference"
+organisation: "just-ak"
+
+source:
+  specs: .kiro/specs
+  steering: .kiro/steering
+
+output:
+  directory: docs/handbook
+  filename: kiro-spec-handbook
+
+pdf:
+  paper: A4
+  notes_pages: false
+  template: templates/handbook.latex
+  toc_depth: 3
+  header_shows_spec_id: true
+
+indexes:
+  specs: true
+  requirements: true
+  tasks: true
+  diagrams: true
+  changes: true
+
+traceability:
+  enabled: true
+
+tokenizer:
+  enabled: true
+  models:
+    - opus-4.8
+    - haiku
+    - gpt-4o
+
+git:
+  history_limit: 200
+  release_tag_glob: "v*"

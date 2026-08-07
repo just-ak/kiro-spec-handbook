@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1300 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .state { fill: #e3f2fd; stroke: #1976d2; stroke-width: 2; }
+      .active { fill: #fff3e0; stroke: #f57c00; stroke-width: 2; }
+      .final { fill: #e8f5e9; stroke: #388e3c; stroke-width: 3; }
+      .circle { fill: #424242; stroke: #212121; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; font-weight: bold; }
+      .label { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+      .transition { font-family: Arial, sans-serif; font-size: 11px; fill: #333; }
+      .arrow { stroke: #333; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .error-arrow { stroke: #d32f2f; stroke-width: 2.5; fill: none; marker-end: url(#error-arrowhead); stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+    <marker id="error-arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#d32f2f" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="650" y="35" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-anchor: middle;">Workflow State Machine</text>
+
+  <!-- Start Circle -->
+  <circle cx="100" cy="400" r="20" class="circle"/>
+
+  <!-- Arrow to Idle -->
+  <path d="M 120 400 L 200 400" class="arrow"/>
+
+  <!-- Idle State -->
+  <rect x="200" y="360" width="140" height="80" class="state" rx="10"/>
+  <text x="270" y="390" class="text">Idle</text>
+  <text x="270" y="410" class="label">(Waiting for push)</text>
+  <text x="270" y="428" class="label">or dispatch</text>
+
+  <!-- Transition: Push to main/beta/alpha or workflow_dispatch -->
+  <path d="M 340 400 L 420 400" class="arrow"/>
+  <text x="370" y="390" class="transition">Push or dispatch</text>
+  <text x="370" y="405" class="transition">(main/beta/alpha)</text>
+
+  <!-- Version & Handbook Running State -->
+  <rect x="420" y="320" width="160" height="160" class="active" rx="10"/>
+  <text x="500" y="350" class="text">Version &amp;</text>
+  <text x="500" y="370" class="text">Handbook</text>
+  <text x="500" y="390" class="text">Running</text>
+  <line x1="430" y1="400" x2="570" y2="400" stroke="#f57c00" stroke-width="1"/>
+  <text x="500" y="420" class="label">Build</text>
+  <text x="500" y="438" class="label">Test</text>
+  <text x="500" y="456" class="label">semantic-release</text>
+
+  <!-- Failure path back to Idle -->
+  <path d="M 500 320 Q 500 280 270 280 Q 270 320 270 320" class="error-arrow"/>
+  <text x="350" y="270" class="transition" fill="#d32f2f">Build/Test Fails</text>
+  <text x="350" y="285" class="transition" fill="#d32f2f">[skip ci] prevents retry</text>
+
+  <!-- Success: Version Bump Decision -->
+  <path d="M 580 400 L 660 400" class="arrow"/>
+  <text x="610" y="390" class="transition">If version</text>
+  <text x="610" y="405" class="transition">needed</text>
+
+  <!-- Decision Diamond -->
+  <g>
+    <polygon points="700,400 760,440 700,480 640,440" fill="#fff9c4" stroke="#fbc02d" stroke-width="2"/>
+    <text x="700" y="445" class="text">Version</text>
+    <text x="700" y="460" class="text">Bump</text>
+  </g>
+
+  <!-- No release path -->
+  <path d="M 640 440 L 560 440 L 560 560 L 270 560 Q 270 480 270 440" class="arrow"/>
+  <text x="580" y="520" class="transition">No release</text>
+  <text x="580" y="535" class="transition">(chore/docs)</text>
+
+  <!-- Version determined path -->
+  <path d="M 760 400 L 840 400" class="arrow"/>
+  <text x="800" y="390" class="transition">Determine</text>
+  <text x="800" y="405" class="transition">version</text>
+
+  <!-- Release Created State -->
+  <rect x="840" y="320" width="160" height="160" class="active" rx="10"/>
+  <text x="920" y="350" class="text">Release</text>
+  <text x="920" y="370" class="text">Created</text>
+  <text x="920" y="390" class="text">(GitHub)</text>
+  <line x1="850" y1="400" x2="990" y2="400" stroke="#f57c00" stroke-width="1"/>
+  <text x="920" y="420" class="label">Git tag</text>
+  <text x="920" y="438" class="label">created</text>
+  <text x="920" y="456" class="label">[skip ci] in</text>
+  <text x="920" y="470" class="label">commit msg</text>
+
+  <!-- Transition to Publish Running -->
+  <path d="M 1000 400 L 1070 400" class="arrow"/>
+  <text x="1035" y="390" class="transition">release:</text>
+  <text x="1035" y="405" class="transition">[published]</text>
+
+  <!-- Publish Running State -->
+  <rect x="1070" y="320" width="160" height="160" class="active" rx="10"/>
+  <text x="1150" y="350" class="text">Publish</text>
+  <text x="1150" y="370" class="text">Workflow</text>
+  <text x="1150" y="390" class="text">Running</text>
+  <line x1="1080" y1="400" x2="1220" y2="400" stroke="#f57c00" stroke-width="1"/>
+  <text x="1150" y="420" class="label">Build</text>
+  <text x="1150" y="438" class="label">npm publish</text>
+  <text x="1150" y="456" class="label">to GitHub</text>
+  <text x="1150" y="470" class="label">Packages</text>
+
+  <!-- Failure path for Publish -->
+  <path d="M 1150 320 Q 1150 260 920 260 Q 920 320 920 320" class="error-arrow"/>
+  <text x="1050" y="250" class="transition" fill="#d32f2f">Publish Fails</text>
+
+  <!-- Success to Published State -->
+  <path d="M 1230 400 L 1300 400" class="arrow"/>
+  <text x="1280" y="390" class="transition">Success</text>
+
+  <!-- Published Final State (double circle) -->
+  <circle cx="1340" cy="400" r="50" class="final"/>
+  <circle cx="1340" cy="400" r="42" fill="none" stroke="#388e3c" stroke-width="2"/>
+  <text x="1340" y="405" class="text" fill="#388e3c">Published</text>
+
+  <!-- Side annotation -->
+  <g transform="translate(80, 650)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">Key Points:</text>
+    <text x="0" y="20" class="label" text-anchor="start">• [skip ci] in commit message prevents Version workflow retry</text>
+    <text x="0" y="40" class="label" text-anchor="start">• Publish workflow only runs on release published event</text>
+    <text x="0" y="60" class="label" text-anchor="start">• Pre-release versions (beta, alpha) follow same state machine</text>
+    <text x="0" y="80" class="label" text-anchor="start">• Build/test failures return to Idle state; no release created</text>
+    <text x="0" y="100" class="label" text-anchor="start">• Publish failure does not re-trigger Version workflow</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(80, 750)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">Legend:</text>
+    <rect x="0" y="10" width="20" height="20" class="state" rx="3"/>
+    <text x="25" y="25" class="label" text-anchor="start">State</text>
+    <rect x="100" y="10" width="20" height="20" class="active" rx="3"/>
+    <text x="125" y="25" class="label" text-anchor="start">Active Workflow</text>
+    <circle cx="210" cy="20" r="10" class="final"/>
+    <text x="225" y="25" class="label" text-anchor="start">Final State</text>
+    <line x1="350" y1="20" x2="380" y2="20" class="error-arrow"/>
+    <text x="385" y="25" class="label" text-anchor="start">Failure Path</text>
+  </g>
+</svg>

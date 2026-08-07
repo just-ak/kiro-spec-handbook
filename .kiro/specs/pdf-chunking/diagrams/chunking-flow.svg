@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .proc { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .dec  { fill: #fef9c3; stroke: #ca8a04; stroke-width: 2; }
+      .term { fill: #ecfdf5; stroke: #059669; stroke-width: 2; }
+      .out  { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; }
+      .lbl  { fill: #0f172a; font-size: 18px; text-anchor: middle; }
+      .lblb { fill: #0f172a; font-size: 18px; font-weight: 600; text-anchor: middle; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arr); }
+      .elbl { fill: #475569; font-size: 14px; text-anchor: middle; }
+      .title{ fill: #0f172a; font-size: 26px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <text x="600" y="42" class="title">PDF Chunking — Page Packing</text>
+
+  <!-- Start -->
+  <rect class="term" x="500" y="80" width="200" height="60" rx="30"/>
+  <text x="600" y="116" class="lblb">Load PDF (pdf-lib)</text>
+
+  <!-- fits? decision -->
+  <path class="dec" d="M600,170 L720,220 L600,270 L480,220 Z"/>
+  <text x="600" y="215" class="lbl">Whole PDF</text>
+  <text x="600" y="235" class="lbl">fits target?</text>
+
+  <!-- yes -> single chunk -->
+  <rect class="out" x="820" y="190" width="260" height="60" rx="8"/>
+  <text x="950" y="226" class="lblb">Emit chunk_1_of_1</text>
+
+  <!-- no -> next page -->
+  <rect class="proc" x="470" y="310" width="260" height="60" rx="8"/>
+  <text x="600" y="338" class="lbl">Take next page;</text>
+  <text x="600" y="358" class="lbl">build tentative chunk</text>
+
+  <!-- overshoot? decision -->
+  <path class="dec" d="M600,400 L730,455 L600,510 L470,455 Z"/>
+  <text x="600" y="450" class="lbl">Tentative &gt; target</text>
+  <text x="600" y="470" class="lbl">and group non-empty?</text>
+
+  <!-- yes -> close group -->
+  <rect class="proc" x="820" y="425" width="270" height="60" rx="8"/>
+  <text x="955" y="453" class="lbl">Close current group;</text>
+  <text x="955" y="473" class="lbl">start new with page</text>
+
+  <!-- no -> add to group -->
+  <rect class="proc" x="150" y="425" width="270" height="60" rx="8"/>
+  <text x="285" y="453" class="lbl">Add page to</text>
+  <text x="285" y="473" class="lbl">current group</text>
+
+  <!-- more pages? -->
+  <path class="dec" d="M600,545 L710,590 L600,635 L490,590 Z"/>
+  <text x="600" y="595" class="lbl">More pages?</text>
+
+  <!-- done -->
+  <rect class="out" x="820" y="560" width="270" height="60" rx="8"/>
+  <text x="955" y="588" class="lblb">Serialise groups →</text>
+  <text x="955" y="608" class="lbl">chunk_i_of_N.pdf</text>
+
+  <!-- edges -->
+  <path class="edge" d="M600,140 L600,168"/>
+  <path class="edge" d="M720,220 L818,220"/>
+  <text x="770" y="210" class="elbl">yes</text>
+  <path class="edge" d="M600,270 L600,308"/>
+  <text x="620" y="295" class="elbl">no</text>
+
+  <path class="edge" d="M600,370 L600,398"/>
+
+  <!-- overshoot yes -> close group (right) -->
+  <path class="edge" d="M730,455 L818,455"/>
+  <text x="775" y="445" class="elbl">yes</text>
+  <!-- overshoot no -> add to group (left) -->
+  <path class="edge" d="M470,455 L422,455"/>
+  <text x="446" y="445" class="elbl">no</text>
+
+  <!-- loop back down to more pages -->
+  <path class="edge" d="M285,485 L285,590 L488,590"/>
+  <path class="edge" d="M955,485 L955,520 L600,520 L600,543"/>
+
+  <!-- more pages yes -> back to take next page -->
+  <path class="edge" d="M490,590 L360,590 L360,340 L468,340"/>
+  <text x="360" y="470" class="elbl">yes</text>
+  <!-- more pages no -> done -->
+  <path class="edge" d="M710,590 L818,590"/>
+  <text x="765" y="580" class="elbl">no</text>
+
+  <text x="600" y="675" class="elbl">A single page larger than the target is emitted as its own oversized chunk with a warning.</text>
+</svg>

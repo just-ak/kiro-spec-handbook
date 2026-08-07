@@ -1,46 +1,7 @@
 import { assignFigureNumbers } from './diagrams.js';
 import { anchors } from './references.js';
+import { cell, delimiter, portraitCompact } from './table.js';
 import type { DiagramRef, Handbook, Spec } from './types.js';
-
-/** Escape pipe characters so table cells never break markdown tables. */
-function cell(text: string): string {
-  return text.replace(/\|/g, '\\|').replace(/\r?\n/g, ' ').trim();
-}
-
-/**
- * Build a pipe-table delimiter row that encodes relative column widths via dash
- * counts. Pandoc turns these into explicit fractional widths, so the table spans
- * the full page width and each column is sized deliberately (no wasted space).
- */
-function delimiter(cols: Array<{ w: number; align?: 'l' | 'r' | 'c' }>): string {
-  const cells = cols.map(({ w, align = 'l' }) => {
-    const dashes = '-'.repeat(Math.max(3, w));
-    if (align === 'r') return `${dashes}:`;
-    if (align === 'c') return `:${dashes}:`;
-    return `:${dashes}`;
-  });
-  return `| ${cells.join(' | ')} |`;
-}
-
-/**
- * Wrap an index table in a landscape page at a compact 8pt so wide rows (long
- * spec/requirement/task IDs) fit on a single line. The raw-LaTeX lines are
- * ignored by non-LaTeX writers.
- */
-function landscapeCompact(tableLines: string[]): string[] {
-  // \blandscape/\elandscape are command wrappers (defined in the template) so
-  // pandoc still parses the markdown table between them.
-  return [
-    '\\blandscape',
-    '\\begingroup\\fontsize{8pt}{10pt}\\selectfont',
-    '',
-    ...tableLines,
-    '',
-    '\\endgroup',
-    '\\elandscape',
-    '',
-  ];
-}
 
 function specLink(spec: Spec): string {
   return `[${cell(spec.title)}](#${anchors.spec(spec.slug)})`;
@@ -52,23 +13,22 @@ export function specIndex(handbook: Handbook): string {
     (s) =>
       `| ${cell(s.id)} | ${specLink(s)} | ${cell(s.version)} | ${cell(s.status)} | ${s.requirements.length} | ${s.tasks.length} | ${s.diagrams.length} |`,
   );
-  return [
-    '# Specification Index',
-    '',
-    ...landscapeCompact([
-      '| Spec ID | Title | Version | Status | Reqs | Tasks | Figs |',
+  return portraitCompact(
+    [
+      '| Spec ID | Title | Ver | Status | Reqs | Tasks | Figs |',
       delimiter([
+        { w: 34 },
         { w: 26 },
-        { w: 42 },
-        { w: 8 },
-        { w: 10 },
-        { w: 5, align: 'r' },
-        { w: 5, align: 'r' },
-        { w: 5, align: 'r' },
+        { w: 5 },
+        { w: 13 },
+        { w: 7, align: 'r' },
+        { w: 7, align: 'r' },
+        { w: 6, align: 'r' },
       ]),
       ...rows,
-    ]),
-  ].join('\n');
+    ],
+    '# Specification Index',
+  ).join('\n');
 }
 
 /** Requirements index: every requirement across all specs, ordered by spec then number. */
@@ -82,15 +42,14 @@ export function requirementsIndex(handbook: Handbook): string {
       );
     }
   }
-  return [
-    '# Requirements Index',
-    '',
-    ...landscapeCompact([
+  return portraitCompact(
+    [
       '| Requirement ID | Requirement |',
-      delimiter([{ w: 30 }, { w: 70 }]),
+      delimiter([{ w: 34 }, { w: 66 }]),
       ...rows,
-    ]),
-  ].join('\n');
+    ],
+    '# Requirements Index',
+  ).join('\n');
 }
 
 /** Tasks index: every task across all specs with completion state. */
@@ -104,15 +63,14 @@ export function tasksIndex(handbook: Handbook): string {
       rows.push(`| ${cell(task.id)} | ${status} | ${cell(task.title)} |`);
     }
   }
-  return [
-    '# Tasks Index',
-    '',
-    ...landscapeCompact([
+  return portraitCompact(
+    [
       '| Task ID | Done | Task |',
-      delimiter([{ w: 34 }, { w: 6, align: 'c' }, { w: 62 }]),
+      delimiter([{ w: 38 }, { w: 8, align: 'c' }, { w: 54 }]),
       ...rows,
-    ]),
-  ].join('\n');
+    ],
+    '# Tasks Index',
+  ).join('\n');
 }
 
 /** Diagram index: figure number, id, caption, owning spec. Assigns figure numbers. */

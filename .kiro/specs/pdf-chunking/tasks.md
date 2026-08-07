@@ -1,0 +1,30 @@
+# Implementation Plan
+
+- [x] 1. Load and measure the input PDF
+  - Read bytes and parse with `pdf-lib` (`ignoreEncryption`); report size and page count.
+  - _Requirements: 1.1_
+- [x] 2. Single-chunk fast path
+  - Re-save as `_chunk_1_of_1` when the whole PDF fits the target.
+  - _Requirements: 1.4_
+- [x] 3. Greedy page packing
+  - [x] 3.1 Measure real serialised size of each tentative chunk
+    - _Requirements: 1.1, 1.2_
+  - [x] 3.2 Close and start groups on overshoot; preserve page order
+    - _Requirements: 1.1, 1.3_
+  - [x] 3.3 Emit oversized single pages with a warning
+    - _Requirements: 3.1, 3.2_
+- [x] 4. Size selection
+  - [x] 4.1 Validate explicit sizes (1–4 MB)
+    - _Requirements: 2.1, 2.2_
+  - [x] 4.2 Auto-size heuristic within the 4 MB limit
+    - _Requirements: 2.3_
+- [x] 5. Output, naming, and reporting
+  - [x] 5.1 Name chunks `<name>_chunk_<i>_of_<N>.pdf`
+    - _Requirements: 4.1_
+  - [x] 5.2 Dry-run preview without writing files
+    - _Requirements: 4.2_
+  - [x] 5.3 Summary of totals and per-chunk stats
+    - _Requirements: 4.3_
+- [x] 6. CLI wiring
+  - Expose `handbook chunk` and the `pdf-chunker` binary with all flags.
+  - _Requirements: 2.1, 4.2_

@@ -23,6 +23,7 @@ import {
   architectureOverview,
   documentInfo,
   steeringSection,
+  tokenSummary,
 } from './sections.js';
 import type { Handbook, HandbookConfig } from './types.js';
 import { validateSpecs } from './validation.js';
@@ -68,7 +69,7 @@ async function assembleParts(config: HandbookConfig, handbook: Handbook): Promis
     architectureDecisions: architectureDecisions(handbook),
     traceability: traceabilityMatrix(handbook),
     gitHistory: await gitChangeHistory(config, handbook),
-    appendices: appendices(handbook),
+    appendices: appendices(handbook, [await tokenSummary(handbook, config)]),
   };
 }
 

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles -->
+  <defs>
+    <style>
+      .box { fill: #e8f4f8; stroke: #0066cc; stroke-width: 2; }
+      .decision { fill: #fff4e6; stroke: #ff9800; stroke-width: 2; }
+      .action { fill: #e8f5e9; stroke: #4caf50; stroke-width: 2; }
+      .event { fill: #f3e5f5; stroke: #9c27b0; stroke-width: 2; }
+      .text { font-family: Arial, sans-serif; font-size: 14px; text-anchor: middle; }
+      .label { font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; fill: #333; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-label { font-family: Arial, sans-serif; font-size: 11px; fill: #333; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="30" style="font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; text-anchor: middle;">Two-Workflow Release Process Overview</text>
+
+  <!-- Developer Push to Feature Branch -->
+  <rect x="50" y="70" width="150" height="60" class="box" rx="5"/>
+  <text x="125" y="100" class="text">Developer Push</text>
+  <text x="125" y="120" class="text">to Feature Branch</text>
+
+  <!-- Arrow -->
+  <path d="M 200 100 L 250 100" class="arrow"/>
+
+  <!-- Feature Branch Step -->
+  <rect x="250" y="70" width="150" height="60" class="box" rx="5"/>
+  <text x="325" y="100" class="text">Feature Branch</text>
+  <text x="325" y="120" class="text">(No Workflow Runs)</text>
+
+  <!-- Arrow -->
+  <path d="M 400 100 L 450 100" class="arrow"/>
+
+  <!-- PR Merge -->
+  <rect x="450" y="70" width="150" height="60" class="box" rx="5"/>
+  <text x="525" y="100" class="text">PR Merge to</text>
+  <text x="525" y="120" class="text">main/beta/alpha</text>
+
+  <!-- Arrow -->
+  <path d="M 600 100 L 650 100" class="arrow"/>
+
+  <!-- Version & Handbook Workflow Trigger -->
+  <rect x="650" y="70" width="140" height="60" class="event" rx="5"/>
+  <text x="720" y="100" class="text">Version &amp;</text>
+  <text x="720" y="120" class="text">Handbook Starts</text>
+
+  <!-- Arrow down to build -->
+  <path d="M 720 130 L 720 160" class="arrow"/>
+
+  <!-- Build & Test Box -->
+  <g>
+    <rect x="600" y="160" width="240" height="100" class="action" rx="5"/>
+    <text x="720" y="185" class="text" style="font-weight: bold;">Build &amp; Test</text>
+    <line x1="610" y1="195" x2="830" y2="195" stroke="#4caf50" stroke-width="1"/>
+    <text x="720" y="210" class="text">• Checkout (fetch-depth: 0)</text>
+    <text x="720" y="228" class="text">• npm run build</text>
+    <text x="720" y="246" class="text">• npm run test</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M 720 260 L 720 290" class="arrow"/>
+
+  <!-- Semantic Release Analysis -->
+  <rect x="600" y="290" width="240" height="80" class="action" rx="5"/>
+  <text x="720" y="315" class="text" style="font-weight: bold;">semantic-release Analyzes</text>
+  <text x="720" y="333" class="text">Commits Since Last Tag</text>
+  <text x="720" y="355" class="text">(feat:, fix:, perf:, refactor:, !)</text>
+
+  <!-- Arrow down to decision -->
+  <path d="M 720 370 L 720 400" class="arrow"/>
+
+  <!-- Decision Diamond: Version Bump -->
+  <g>
+    <polygon points="720,400 780,440 720,480 660,440" class="decision"/>
+    <text x="720" y="445" class="text">Version</text>
+    <text x="720" y="460" class="text">Bump?</text>
+  </g>
+
+  <!-- No Release Path (chore/docs only) -->
+  <path d="M 660 440 L 550 440" class="arrow"/>
+  <text x="600" y="430" class="arrow-label">No Release</text>
+  <rect x="420" y="410" width="130" height="60" class="box" rx="5"/>
+  <text x="485" y="440" class="text">Workflow Stops</text>
+  <text x="485" y="460" class="text">(chore/docs only)</text>
+
+  <!-- Yes Release Path -->
+  <path d="M 720 480 L 720 510" class="arrow"/>
+  <text x="740" y="505" class="arrow-label">Yes</text>
+
+  <!-- Update Files -->
+  <rect x="600" y="510" width="240" height="100" class="action" rx="5"/>
+  <text x="720" y="535" class="text" style="font-weight: bold;">Update Files</text>
+  <line x1="610" y1="545" x2="830" y2="545" stroke="#4caf50" stroke-width="1"/>
+  <text x="720" y="560" class="text">• package.json version</text>
+  <text x="720" y="578" class="text">• CHANGELOG.md</text>
+  <text x="720" y="596" class="text">• Generate handbook PDF</text>
+
+  <!-- Arrow down -->
+  <path d="M 720 610 L 720 640" class="arrow"/>
+
+  <!-- Commit & Tag -->
+  <rect x="600" y="640" width="240" height="100" class="action" rx="5"/>
+  <text x="720" y="665" class="text" style="font-weight: bold;">Commit &amp; Tag</text>
+  <line x1="610" y1="675" x2="830" y2="675" stroke="#4caf50" stroke-width="1"/>
+  <text x="720" y="690" class="text">Message: chore(release): v1.2.3 [skip ci]</text>
+  <text x="720" y="708" class="text">Git tag: v1.2.3 (or v1.0.0-beta.1)</text>
+  <text x="720" y="726" class="text">Push back to branch</text>
+
+  <!-- Arrow down -->
+  <path d="M 720 740 L 720 770" class="arrow"/>
+
+  <!-- Create GitHub Release -->
+  <rect x="600" y="770" width="240" height="70" class="event" rx="5"/>
+  <text x="720" y="795" class="text" style="font-weight: bold;">Create GitHub Release</text>
+  <text x="720" y="815" class="text">Publish Workflow Triggered</text>
+
+  <!-- Right side: Publish Workflow -->
+  <g>
+    <!-- Arrow to Publish -->
+    <path d="M 840 805 L 950 805" class="arrow"/>
+    <text x="900" y="795" class="arrow-label">release: [published]</text>
+
+    <!-- Publish Workflow -->
+    <rect x="950" y="770" width="240" height="70" class="event" rx="5"/>
+    <text x="1070" y="795" class="text" style="font-weight: bold;">Publish Workflow</text>
+    <text x="1070" y="815" class="text">Triggered by Release Event</text>
+
+    <!-- Arrow down -->
+    <path d="M 1070 840 L 1070 870" class="arrow"/>
+
+    <!-- Publish to npm -->
+    <rect x="950" y="870" width="240" height="60" class="action" rx="5"/>
+    <text x="1070" y="895" class="text" style="font-weight: bold;">npm publish</text>
+    <text x="1070" y="915" class="text">to GitHub Packages</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(50, 760)">
+    <text x="0" y="0" style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">Legend:</text>
+    <rect x="0" y="10" width="15" height="15" class="box" rx="2"/>
+    <text x="20" y="22" class="label">Source/State</text>
+    <rect x="110" y="10" width="15" height="15" class="action" rx="2"/>
+    <text x="130" y="22" class="label">Action/Process</text>
+    <rect x="250" y="10" width="15" height="15" class="event" rx="2"/>
+    <text x="270" y="22" class="label">Event/Trigger</text>
+    <polygon points="375,18 383,10 391,18 383,26" class="decision"/>
+    <text x="400" y="22" class="label">Decision</text>
+  </g>
+</svg>

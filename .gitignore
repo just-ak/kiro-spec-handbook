@@ -4,3 +4,7 @@ exampleData
 .DS_Store
 dist
 examples
+
+# Generated handbook output (intermediate). The tool republishes the canonical
+# PDF to the repo root, which is kept tracked as the browsable copy.
+docs/handbook/

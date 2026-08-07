@@ -181,12 +181,36 @@ indexes:
   diagrams: true # Include diagram index
   traceability: true # Include traceability matrix
 
+tokenizer:
+  enabled: true # Emit the tokenizer summary appendix
+  models: # Models to tabulate (one column each)
+    - opus-4.8 # Claude Opus 4.8 (~3.5 chars/token)
+    - haiku # Claude Haiku (~3.5 chars/token)
+    - gpt-4o # GPT-4o / o200k (~4.0 chars/token)
+  # chars_per_token: # Optional per-model overrides
+  #   opus-4.8: 3.6
+
 git:
   include_history: true # Include git changelog
   history_depth: 50 # Number of commits to include
 ```
 
 All settings are optional — sensible defaults apply.
+
+### Tokenizer Summary
+
+The handbook includes a **Tokenizer Summary** appendix (Appendix B) that estimates
+token counts for every spec and steering document across the configured models.
+This makes it easy to spot bloat — the tables are sorted largest-first and include
+per-model totals.
+
+Supported model keys: `opus-4.8`, `sonnet-4.5`, `haiku`, `gpt-4o`, `gpt-4`,
+`gpt-3.5-turbo`. Unknown keys fall back to a generic ~4 chars/token estimate.
+
+Counts are deterministic, offline approximations based on characters-per-token
+(Claude ≈ 3.5, GPT ≈ 4.0), not exact tokenizer output — accurate enough to
+compare documents and track bloat over time. Override any ratio with
+`chars_per_token`.
 
 ## Spec Front Matter
 

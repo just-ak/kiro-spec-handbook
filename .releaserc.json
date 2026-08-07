@@ -94,8 +94,7 @@
       "@semantic-release/npm",
       {
         "pkgRoot": ".",
-        "publish": true,
-        "tarballDir": "dist"
+        "publish": false
       }
     ],
     [

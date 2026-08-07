@@ -12,8 +12,16 @@
 \usepackage{pdflscape} % rotate wide index/diagram pages to landscape
 % Command wrappers (not a raw environment) so pandoc still processes the
 % markdown tables/images placed between them.
-\newcommand{\blandscape}{\begin{landscape}}
-\newcommand{\elandscape}{\end{landscape}}
+%
+% Landscape pages suppress the running header/footer. fancyhdr draws them in the
+% portrait coordinate system; pdflscape then sets the page's /Rotate so the
+% viewer flips the page — which would leave the header and footer running
+% sideways up the page edges. Blanking them keeps the wide index / diagram pages
+% clean. The section heading is emitted inside the landscape block (see
+% landscapeCompact) so it stays with its table, and the TOC still lists the
+% correct page numbers.
+\newcommand{\blandscape}{\begin{landscape}\pagestyle{empty}}
+\newcommand{\elandscape}{\end{landscape}\pagestyle{fancy}}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 % --- Table support (mirrors pandoc's own auto-injected preamble) ---

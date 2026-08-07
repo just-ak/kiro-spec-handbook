@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .box { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 8; }
+      .io { fill: #ecfdf5; stroke: #059669; stroke-width: 2; rx: 8; }
+      .out { fill: #fef3c7; stroke: #d97706; stroke-width: 2; rx: 8; }
+      .lbl { fill: #0f172a; font-size: 20px; font-weight: 600; text-anchor: middle; }
+      .sub { fill: #475569; font-size: 14px; text-anchor: middle; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .title { fill: #0f172a; font-size: 26px; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <text x="600" y="44" class="title">Handbook Generation Pipeline</text>
+
+  <!-- Row 1 -->
+  <rect class="io"  x="40"  y="90" width="180" height="80"/>
+  <text x="130" y="126" class="lbl">.kiro/specs</text>
+  <text x="130" y="150" class="sub">requirements / design / tasks / *.svg</text>
+
+  <rect class="box" x="290" y="90" width="160" height="80"/>
+  <text x="370" y="126" class="lbl">Config</text>
+  <text x="370" y="150" class="sub">config.ts</text>
+
+  <rect class="box" x="520" y="90" width="160" height="80"/>
+  <text x="600" y="126" class="lbl">Scan</text>
+  <text x="600" y="150" class="sub">scanner.ts</text>
+
+  <rect class="box" x="750" y="90" width="180" height="80"/>
+  <text x="840" y="120" class="lbl">Parse</text>
+  <text x="840" y="144" class="sub">markdown / metadata</text>
+  <text x="840" y="160" class="sub">diagrams</text>
+
+  <rect class="box" x="1000" y="90" width="160" height="80"/>
+  <text x="1080" y="120" class="lbl">Index</text>
+  <text x="1080" y="144" class="sub">indexer.ts</text>
+  <text x="1080" y="160" class="sub">references.ts</text>
+
+  <!-- Row 2 -->
+  <rect class="box" x="1000" y="300" width="160" height="80"/>
+  <text x="1080" y="336" class="lbl">Assemble</text>
+  <text x="1080" y="360" class="sub">renderer.ts (pure)</text>
+
+  <rect class="box" x="750" y="300" width="180" height="80"/>
+  <text x="840" y="330" class="lbl">Sections</text>
+  <text x="840" y="354" class="sub">sections.ts</text>
+  <text x="840" y="370" class="sub">tokenizer.ts</text>
+
+  <rect class="box" x="520" y="300" width="160" height="80"/>
+  <text x="600" y="330" class="lbl">Render</text>
+  <text x="600" y="354" class="sub">Pandoc +</text>
+  <text x="600" y="370" class="sub">XeLaTeX</text>
+
+  <rect class="out" x="290" y="300" width="160" height="80"/>
+  <text x="370" y="336" class="lbl">PDF</text>
+  <text x="370" y="360" class="sub">handbook.pdf</text>
+
+  <rect class="out" x="40" y="300" width="180" height="80"/>
+  <text x="130" y="330" class="lbl">Markdown</text>
+  <text x="130" y="354" class="sub">handbook.md</text>
+  <text x="130" y="370" class="sub">(always emitted)</text>
+
+  <!-- Row 3 side outputs -->
+  <rect class="out" x="520" y="470" width="160" height="70"/>
+  <text x="600" y="502" class="lbl">Lock file</text>
+  <text x="600" y="524" class="sub">lock.ts (delta)</text>
+
+  <rect class="io" x="750" y="470" width="180" height="70"/>
+  <text x="840" y="502" class="lbl">Git</text>
+  <text x="840" y="524" class="sub">changelog.ts / git.ts</text>
+
+  <!-- Edges row 1 -->
+  <path class="edge" d="M220,130 L288,130"/>
+  <path class="edge" d="M450,130 L518,130"/>
+  <path class="edge" d="M680,130 L748,130"/>
+  <path class="edge" d="M930,130 L998,130"/>
+
+  <!-- Index -> Assemble (down) -->
+  <path class="edge" d="M1080,170 L1080,298"/>
+
+  <!-- Assemble <- Sections <- Render <- PDF <- Markdown (right to left) -->
+  <path class="edge" d="M998,340 L932,340"/>
+  <path class="edge" d="M748,340 L682,340"/>
+  <path class="edge" d="M518,340 L452,340"/>
+  <path class="edge" d="M288,340 L222,340"/>
+
+  <!-- Render feeds Lock + reads Git -->
+  <path class="edge" d="M600,380 L600,468"/>
+  <path class="edge" d="M840,468 L840,384"/>
+
+  <text x="600" y="620" class="sub">Optional tooling (Pandoc, SVG converter, mmdc) degrades gracefully — Markdown is always produced.</text>
+</svg>

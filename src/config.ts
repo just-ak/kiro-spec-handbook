@@ -19,6 +19,7 @@ const DEFAULTS: Omit<HandbookConfig, 'repoRoot' | 'toolRoot'> = {
   },
   indexes: { specs: true, requirements: true, tasks: true, diagrams: true, changes: true },
   traceability: { enabled: true },
+  tokenizer: { enabled: true, models: ['opus-4.8', 'haiku', 'gpt-4o'] },
   git: { history_limit: 200, release_tag_glob: 'v*' },
   build_date: undefined,
 };
