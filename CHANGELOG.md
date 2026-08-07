@@ -1,3 +1,7 @@
+## 0.5.0 (2026-08-07)
+
+* feat: change release processes ([d575e7a](https://github.com/just-ak/kiro-spec-handbook/commit/d575e7a))
+
 ## 0.4.0 (2026-08-07)
 
 * feat: change release processes ([7295be5](https://github.com/just-ak/kiro-spec-handbook/commit/7295be5))
