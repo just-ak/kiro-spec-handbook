@@ -1,3 +1,10 @@
+## 0.3.0 (2026-08-07)
+
+* Merge pull request #1 from just-ak/alpha ([e754e7d](https://github.com/just-ak/kiro-spec-handbook/commit/e754e7d)), closes [#1](https://github.com/just-ak/kiro-spec-handbook/issues/1)
+* chore(release): 0.3.0-alpha.1 [skip ci] ([46a82fe](https://github.com/just-ak/kiro-spec-handbook/commit/46a82fe))
+* feat: change release processes ([3e7606b](https://github.com/just-ak/kiro-spec-handbook/commit/3e7606b))
+* feat: change release processes ([aafc667](https://github.com/just-ak/kiro-spec-handbook/commit/aafc667))
+
 ## 0.3.0-alpha.1 (2026-08-07)
 
 * feat: change release processes ([3e7606b](https://github.com/just-ak/kiro-spec-handbook/commit/3e7606b))
