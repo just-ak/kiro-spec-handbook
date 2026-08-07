@@ -91,10 +91,6 @@
       }
     ],
     [
-      "@semantic-release/npm",
-      false
-    ],
-    [
       "@semantic-release/git",
       {
         "assets": [
