@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
   issues: write
   pull-requests: write
 
@@ -47,3 +48,4 @@ jobs:
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
